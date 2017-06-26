@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "com.latesum";
+option java_outer_classname = "ErrorProtos";
+
+enum Error {
+    UNKNOWN = 0;
+
+    // ** GLOBAL **
+    USER_NOT_FOUND = 1;
+
+    // ** Service 1: UserService **
+    USER_SERVICE_NONEXISTENT_EMAIL = 101;
+    USER_SERVICE_INVALID_EMAIL = 102;
+    USER_SERVICE_INVALID_PASSWORD = 103;
+    USER_SERVICE_INVALID_NICKNAME = 104;
+    USER_SERVICE_DUPLICATED_EMAIL = 105;
+    USER_SERVICE_ACTIVATED_USER = 106;
+    USER_SERVICE_INVALID_ACTIVATE_CODE = 107;
+    USER_SERVICE_INVALID_RESET_PASSWORD_CODE = 108;
+    USER_SERVICE_WRONG_PASSWORD = 109;
+    USER_SERVICE_UNACTIVATED_USER = 110;
+    USER_SERVICE_FREEZED_USER = 111;
+
+}

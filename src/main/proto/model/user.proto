@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "com.latesum";
+option java_outer_classname = "UserModelProtos";
+
+message UserProfile {
+    int64 id = 1;
+    string email = 2;
+    string nickname = 3;
+}
+
+message UserIdAndNickname {
+    int64 id = 1;
+    string nickname = 2;
+}
