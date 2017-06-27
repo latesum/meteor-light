@@ -90,8 +90,8 @@ dependencies {
     compile 'com.google.protobuf:protobuf-java:3.2.0'
     // gson
     compile 'com.google.code.gson:gson:2.8.1'
-    // gecco
-    compile 'com.geccocrawler:gecco:1.2.8'
+    // crawler4j
+    compile 'edu.uci.ics:crawler4j:4.2'
     // Apache commons
     compile 'org.apache.commons:commons-pool2:2.4.2'
     compile 'org.apache.commons:commons-lang3:3.5'
