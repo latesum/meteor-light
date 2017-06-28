@@ -1,6 +1,6 @@
 package com.latesum.meteorlight.model
 
-import com.latesum.NewsModelProtos.NewsType
+import com.latesum.meteorlight.proto.NewsModelProtos.NewsType
 import org.hibernate.annotations.GenericGenerator
 import java.time.Instant
 import javax.persistence.Column

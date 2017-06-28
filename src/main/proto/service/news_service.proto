@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package service;
+
+option java_package = "com.latesum.meteorlight.proto";
+option java_outer_classname = "NewsServiceProtos";
+
+import "model/news.proto";
+
+message ListNewsRequest {
+    string user_id = 1;
+    int32 page = 2;
+    int32 limit = 3;
+}
+
+message ListNewsResponse {
+    int32 total = 1;
+    repeated model.NewsProfile news = 2;
+}

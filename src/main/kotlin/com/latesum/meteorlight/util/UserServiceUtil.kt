@@ -10,7 +10,7 @@ class UserServiceUtil {
     // W3C email regex: https://www.w3.org/TR/html-markup/input.email.html#input.email.attrs.value.multiple .
     private val emailRegex = """^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$""".toRegex()
 
-    private val passwordRegex = """^[A-Za-z0-9`\-=~!@#$%\^&*,._+]{8,20}$""".toRegex()
+    private val passwordRegex = """^[A-Za-z0-9`\-=~!@#$%\^&*,._+]{6,20}$""".toRegex()
 
     fun hashPassword(password: String): String {
         return BCrypt.hashpw(password, BCrypt.gensalt(8))
@@ -33,7 +33,7 @@ class UserServiceUtil {
     }
 
     fun isValidNickname(nickname: String): Boolean {
-        return nickname.isNotEmpty() && nickname.length <= 35
+        return nickname.length in 6..35
     }
 
 }

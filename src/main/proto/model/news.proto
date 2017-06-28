@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package model;
 
-option java_package = "com.latesum";
+option java_package = "com.latesum.meteorlight.proto";
 option java_outer_classname = "NewsModelProtos";
 
 import "google/protobuf/timestamp.proto";
 
-message NewProfile {
-    int64 id = 1;
+message NewsProfile {
+    string id = 1;
     string title = 2;
     string url = 3;
     string image = 4;

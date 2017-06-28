@@ -104,6 +104,8 @@ dependencies {
     // Redisson
     compile 'de.ruedigermoeller:fst:2.50'
     compile 'org.redisson:redisson:3.3.2'
+    // utils
+    compile 'cn.patest:utils:1.0-20161230.083218-2'
     // MySQL
     runtime 'mysql:mysql-connector-java:6.0.5'
 

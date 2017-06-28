@@ -2,16 +2,20 @@ syntax = "proto3";
 
 package model;
 
-option java_package = "com.latesum";
+option java_package = "com.latesum.meteorlight.proto";
 option java_outer_classname = "UserModelProtos";
 
+import "model/news.proto";
+
 message UserProfile {
-    int64 id = 1;
+    string id = 1;
     string email = 2;
     string nickname = 3;
+    model.NewsType favourite = 4;
+    model.NewsType last_look_at = 5;
 }
 
 message UserIdAndNickname {
-    int64 id = 1;
+    string id = 1;
     string nickname = 2;
 }

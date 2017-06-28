@@ -2,9 +2,9 @@ package com.latesum.meteorlight.service
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
-import com.latesum.NewsModelProtos.NewsType
 import com.latesum.meteorlight.dao.NewsDao
 import com.latesum.meteorlight.model.News
+import com.latesum.meteorlight.proto.NewsModelProtos.NewsType
 import com.latesum.meteorlight.util.CommonUtil
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service

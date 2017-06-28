@@ -2,54 +2,11 @@ syntax = "proto3";
 
 package service;
 
-option java_package = "com.latesum";
+option java_package = "com.latesum.meteorlight.proto";
 option java_outer_classname = "UserServiceProtos";
 
 import "model/user.proto";
-
-service UserService {
-    // Add an un-activated user. The user needs to activate himself via activate_code. The activate_code should be sent
-    // to the user in a reliable way.
-    // Errors:
-    //   USER_SERVICE_INVALID_EMAIL
-    //   USER_SERVICE_INVALID_PASSWORD
-    //   USER_SERVICE_INVALID_NICKNAME
-    //   USER_SERVICE_DEPLICATED_EMAIL
-    rpc AddUser (AddUserRequest) returns (AddUserResponse);
-
-    // Activate user via activate_code.
-    // Errors:
-    //   USER_SERVICE_INVALID_ACTIVATE_CODE
-    //   USER_SERVICE_ACTIVATED_USER
-    rpc ActivateUser (ActivateUserRequest) returns (ActivateUserResponse);
-
-    // Get user's activate_code.
-    // Errors:
-    //   USER_SERVICE_NONEXISTENT_EMAIL
-    //   USER_SERVICE_ACTIVATED_USER
-    rpc GetUserActivateCode (GetUserActivateCodeRequest) returns (GetUserActivateCodeResponse);
-
-    // Generate reset password code for user. The user needs to reset his password via reset_password_code. The
-    // reset_password_code should be sent to user in a reliable way.
-    // Errors:
-    //   USER_SERVICE_NONEXISTENT_EMAIL
-    rpc GenerateResetPasswordCode (GenerateResetPasswordCodeRequest) returns (GenerateResetPasswordCodeResponse);
-
-    // Reset user's password via reset_password_code.
-    // Errors:
-    //   USER_NOT_FOUND
-    //   USER_SERVICE_INVALID_PASSWORD
-    //   USER_SERVICE_INVALID_RESET_PASSWORD_CODE
-    rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
-
-    // User login into system using his email and password.
-    // Errors:
-    //   USER_SERVICE_NONEXISTENT_EMAIL
-    //   USER_SERVICE_WRONG_PASSWORD
-    //   USER_SERVICE_UNACTIVATED_USER
-    rpc Login (LoginRequest) returns (LoginResponse);
-
-}
+import "model/news.proto";
 
 message AddUserRequest {
     string email = 1;
@@ -63,12 +20,12 @@ message AddUserResponse {
 }
 
 message ActivateUserRequest {
-    int64 user_id = 1;
+    string user_id = 1;
     string activate_code = 2;
 }
 
 message ActivateUserResponse {
-    int64 user_id = 1;
+    string user_id = 1;
 }
 
 message GetUserActivateCodeRequest {
@@ -76,7 +33,7 @@ message GetUserActivateCodeRequest {
 }
 
 message GetUserActivateCodeResponse {
-    int64 user_id = 1;
+    string user_id = 1;
     string activate_code = 2;
 }
 
@@ -85,26 +42,34 @@ message GenerateResetPasswordCodeRequest {
 }
 
 message GenerateResetPasswordCodeResponse {
-    int64 user_id = 1;
+    string user_id = 1;
     string reset_password_code = 2;
 }
 
 message ResetPasswordRequest {
-    int64 user_id = 1;
+    string user_id = 1;
     string reset_password_code = 2;
     string new_password = 3;
 }
 
 message ResetPasswordResponse {
-    int64 user_id = 1;
+    string user_id = 1;
 }
 
 message LoginRequest {
-    int64 product_id = 1;
-    string email = 2;
-    string password = 3;
+    string email = 1;
+    string password = 2;
 }
 
 message LoginResponse {
+    model.UserProfile user = 1;
+}
+
+message SetUserFavouriteRequest {
+    string userId = 1;
+    model.NewsType favourite = 2;
+}
+
+message SetUserFavouriteResponse {
     model.UserProfile user = 1;
 }

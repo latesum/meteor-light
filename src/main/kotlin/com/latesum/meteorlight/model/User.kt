@@ -1,5 +1,6 @@
 package com.latesum.meteorlight.model
 
+import com.latesum.meteorlight.proto.NewsModelProtos.NewsType
 import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.GenericGenerator
 import java.time.Instant
@@ -11,7 +12,8 @@ import javax.persistence.*
 @Entity
 @DynamicUpdate
 @Table(uniqueConstraints = arrayOf(
-        UniqueConstraint(name = "uk_email", columnNames = arrayOf("email"))
+        UniqueConstraint(name = "uk_email", columnNames = arrayOf("email")),
+        UniqueConstraint(name = "uk_nickname", columnNames = arrayOf("nickname"))
 ))
 class User(
 
@@ -38,6 +40,12 @@ class User(
         @Column(nullable = true,
                 columnDefinition = "TIMESTAMP NULL DEFAULT NULL")
         var lastLoginAt: Instant? = null,
+
+        @Column(nullable = true)
+        var favourite: NewsType? = null,
+
+        @Column(nullable = true)
+        var lastLookAt: NewsType? = null,
 
         @Column(nullable = false, insertable = false, updatable = false,
                 columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

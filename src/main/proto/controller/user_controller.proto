@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package controller;
+
+option java_package = "com.latesum.meteorlight.proto";
+option java_outer_classname = "UserControllerProtos";
+
+import "model/user.proto";
+import "model/news.proto";
+
+message RegisterRequest {
+    string email = 1;
+    string password = 2;
+    string nickname = 3;
+}
+
+message RegisterResponse {
+    string email = 1;
+}
+
+message ResendActivateMailRequest {
+    string email = 1;
+}
+
+message ResendActivateMailResponse {
+}
+
+message RequestResetPasswordRequest {
+    string email = 1;
+}
+
+message RequestResetPasswordResponse {
+    string email = 1;
+}
+
+message ResetPasswordRequest {
+    int64 user_id = 1;
+    string reset_password_code = 2;
+    string new_password = 3;
+}
+
+message ResetPasswordResponse {
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message LoginResponse {
+    model.UserProfile user = 1;
+}
+
+message SetUserFavouriteRequest {
+    model.NewsType favourite = 1;
+}
+
+message SetUserFavouriteResponse {
+    model.UserProfile user = 1;
+}
