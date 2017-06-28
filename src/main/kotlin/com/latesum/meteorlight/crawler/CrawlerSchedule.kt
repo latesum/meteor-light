@@ -42,7 +42,7 @@ class CrawlerSchedule {
          * You can set the maximum crawl depth here. The default value is -1 for
          * unlimited depth
          */
-        config.maxDepthOfCrawling = 2
+        config.maxDepthOfCrawling = -1
 
         /*
          * You can set the maximum number of pages to crawl. The default value
@@ -55,7 +55,6 @@ class CrawlerSchedule {
          * example: the contents of pdf, or the metadata of images etc
          */
         config.isIncludeBinaryContentInCrawling = false
-
 
         /*
          * Do you need to set a proxy? If so, you can use:
@@ -79,24 +78,28 @@ class CrawlerSchedule {
          * Instantiate the controller for this crawl.
          */
         val pageFetcher = PageFetcher(config)
-        val robotstxtConfig = RobotstxtConfig()
-        val robotstxtServer = RobotstxtServer(robotstxtConfig, pageFetcher)
-        val controller = CrawlController(config, pageFetcher, robotstxtServer)
+        val robotsTxtConfig = RobotstxtConfig()
+        val robotsTxtServer = RobotstxtServer(robotsTxtConfig, pageFetcher)
+        val controller = CrawlController(config, pageFetcher, robotsTxtServer)
 
         /*
          * For each crawl, you need to add some seed urls. These are the first
          * URLs that are fetched and then the crawler starts following links
          * which are found in these pages
          */
-        controller.addSeed("http://www.ics.uci.edu/")
-        controller.addSeed("http://www.ics.uci.edu/~lopes/")
-        controller.addSeed("http://www.ics.uci.edu/~welling/")
-
+        controller.addSeed("http://news.163.com/domestic/")
+        controller.addSeed("http://news.163.com/world/")
+        controller.addSeed("http://news.163.com/shehui/")
+        controller.addSeed("http://war.163.com/")
+        controller.addSeed("http://news.163.com/air/")
+        controller.addSeed("http://news.163.com/uav/")
         /*
          * Start the crawl. This is a blocking operation, meaning that your code
          * will reach the line after this only when crawling is finished.
          */
         controller.start(NewsCrawler::class.java, numberOfCrawlers)
+
+        controller.shutdown()
     }
 
 }

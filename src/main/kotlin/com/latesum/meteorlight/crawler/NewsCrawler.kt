@@ -18,9 +18,11 @@ class NewsCrawler : WebCrawler() {
         if (IMAGE_EXTENSIONS.matcher(href).matches()) {
             return false
         }
-
-        // Only accept the url if it is in the "www.ics.uci.edu" domain and protocol is "http".
-        return href.startsWith("http://www.ics.uci.edu/")
+        //val href = page.webURL.url.toLowerCase()
+        return href.startsWith("http://news.163.com/17/") ||
+                href.startsWith("http://news.163.com/uav/17/") ||
+                href.startsWith("http://news.163.com/air/17/") ||
+                href.startsWith("http://war.163.com/17/")
     }
 
     /**
@@ -28,14 +30,13 @@ class NewsCrawler : WebCrawler() {
      * by your program.
      */
     override fun visit(page: Page) {
-        println(111)
-        val docid = page.getWebURL().getDocid()
-        val url = page.getWebURL().getURL()
-        val domain = page.getWebURL().getDomain()
-        val path = page.getWebURL().getPath()
-        val subDomain = page.getWebURL().getSubDomain()
-        val parentUrl = page.getWebURL().getParentUrl()
-        val anchor = page.getWebURL().getAnchor()
+        val docid = page.webURL.docid
+        val url = page.webURL.url
+        val domain = page.webURL.domain
+        val path = page.webURL.path
+        val subDomain = page.webURL.subDomain
+        val parentUrl = page.webURL.parentUrl
+        val anchor = page.webURL.anchor
 
         WebCrawler.logger.debug("Docid: {}", docid)
         WebCrawler.logger.info("URL: {}", url)
@@ -45,8 +46,8 @@ class NewsCrawler : WebCrawler() {
         WebCrawler.logger.debug("Parent page: {}", parentUrl)
         WebCrawler.logger.debug("Anchor text: {}", anchor)
 
-        if (page.getParseData() is HtmlParseData) {
-            val htmlParseData = page.getParseData() as HtmlParseData
+        if (page.parseData is HtmlParseData) {
+            val htmlParseData = page.parseData as HtmlParseData
             val text = htmlParseData.text
             val html = htmlParseData.html
             val links = htmlParseData.outgoingUrls
@@ -56,11 +57,11 @@ class NewsCrawler : WebCrawler() {
             WebCrawler.logger.debug("Number of outgoing links: {}", links.size)
         }
 
-        val responseHeaders = page.getFetchResponseHeaders()
+        val responseHeaders = page.fetchResponseHeaders
         if (responseHeaders != null) {
             WebCrawler.logger.debug("Response headers:")
             for (header in responseHeaders) {
-                WebCrawler.logger.debug("\t{}: {}", header.getName(), header.getValue())
+                WebCrawler.logger.debug("\t{}: {}", header.name, header.value)
             }
         }
 
@@ -68,7 +69,6 @@ class NewsCrawler : WebCrawler() {
     }
 
     companion object {
-
         private val IMAGE_EXTENSIONS = Pattern.compile(".*\\.(bmp|gif|jpg|png)$")
     }
 }
