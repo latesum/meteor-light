@@ -1,6 +1,8 @@
 package com.latesum.meteorlight.util
 
 import org.springframework.stereotype.Component
+import java.text.SimpleDateFormat
+import java.time.Instant
 
 @Component
 class CommonUtil {
@@ -29,4 +31,11 @@ class CommonUtil {
             return -1
         return 0
     }
+
+    fun parseTime(time: String): Instant {
+        val format = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
+        val date = format.parse(time)
+        return date.toInstant()
+    }
+
 }

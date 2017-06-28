@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "com.latesum";
+option java_outer_classname = "NewsModelProtos";
+
+import "google/protobuf/timestamp.proto";
+
+message NewProfile {
+    int64 id = 1;
+    string title = 2;
+    string url = 3;
+    string image = 4;
+    google.protobuf.Timestamp time = 5;
+    NewsType type = 6;
+}
+
+enum NewsType {
+    GUONEI = 0;
+    GUOJI = 1;
+    SHEHUI = 2;
+    JUNSHI = 3;
+    HANGKONG = 4;
+    WURENJI = 5;
+}

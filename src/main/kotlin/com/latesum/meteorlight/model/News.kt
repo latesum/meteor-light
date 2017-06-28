@@ -1,28 +1,38 @@
 package com.latesum.meteorlight.model
 
+import com.latesum.NewsModelProtos.NewsType
 import org.hibernate.annotations.GenericGenerator
-import org.springframework.security.crypto.keygen.KeyGenerators
 import java.time.Instant
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.Id
 
+/**
+ * Definition for table news.
+ */
 @Entity
-@Table(indexes = arrayOf(
-        Index(name = "idx_user_id", columnList = "user_id")
-))
-class ResetPasswordCode(
+class News(
 
         @Id
         @GeneratedValue(generator = "system-uuid")
         @GenericGenerator(name = "system-uuid", strategy = "uuid")
         val id: String = "",
 
-        @ManyToOne(fetch = FetchType.LAZY, optional = false)
-        @JoinColumn(nullable = false, insertable = true, updatable = false,
-                foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-        val user: User? = null,
+        @Column(nullable = false)
+        var title: String = "",
 
-        @Column(nullable = false, insertable = true, updatable = false)
-        val code: String = KeyGenerators.string().generateKey(),
+        @Column(nullable = false)
+        var url: String = "",
+
+        @Column(nullable = true)
+        var image: String? = null,
+
+        @Column(nullable = false)
+        var time: Instant = Instant.EPOCH,
+
+        @Column(nullable = false)
+        var type: NewsType = NewsType.GUONEI,
 
         @Column(nullable = false, insertable = false, updatable = false,
                 columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")

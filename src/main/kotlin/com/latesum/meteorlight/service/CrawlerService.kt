@@ -1,44 +1,54 @@
-package com.latesum.meteorlight.crawler
+package com.latesum.meteorlight.service
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
+import com.latesum.NewsModelProtos.NewsType
+import com.latesum.meteorlight.dao.NewsDao
+import com.latesum.meteorlight.model.News
+import com.latesum.meteorlight.util.CommonUtil
 import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Service
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
 
-
-class CrawlerSchedule {
+@Service
+class CrawlerService(private val newsDao: NewsDao,
+                     private val commonUtil: CommonUtil) {
 
     @Scheduled(initialDelay = 1000, fixedRate = 24 * 3600)
     fun startCrawler() {
-        val urlList = mutableListOf<Pair<String, String>>()
-        urlList.add(Pair("guonei",
+
+        println("start crawler")
+
+        val urlList = mutableListOf<Pair<NewsType, String>>()
+        urlList.add(Pair(NewsType.GUONEI,
                 "http://temp.163.com/special/00804KVA/cm_guonei.js?callback=data_callback"))
-        urlList.add(Pair("guoji",
+        urlList.add(Pair(NewsType.GUOJI,
                 "http://temp.163.com/special/00804KVA/cm_guoji.js?callback=data_callback"))
-        urlList.add(Pair("shehui",
+        urlList.add(Pair(NewsType.SHEHUI,
                 "http://temp.163.com/special/00804KVA/cm_shehui.js?callback=data_callback"))
-        urlList.add(Pair("junshi",
+        urlList.add(Pair(NewsType.JUNSHI,
                 "http://temp.163.com/special/00804KVA/cm_war.js?callback=data_callback"))
-        urlList.add(Pair("hangkong",
+        urlList.add(Pair(NewsType.HANGKONG,
                 "http://temp.163.com/special/00804KVA/cm_hangkong.js?callback=data_callback"))
-        urlList.add(Pair("wurenji",
+        urlList.add(Pair(NewsType.WURENJI,
                 "http://news.163.com/uav/special/000189N0/uav_index.js?callback=data_callback"))
         (2..8).map {
-            urlList.add(Pair("guonei",
+            urlList.add(Pair(NewsType.GUONEI,
                     "http://temp.163.com/special/00804KVA/cm_guonei_0$it.js?callback=data_callback"))
-            urlList.add(Pair("guoji",
+            urlList.add(Pair(NewsType.GUOJI,
                     "http://temp.163.com/special/00804KVA/cm_guoji_0$it.js?callback=data_callback"))
-            urlList.add(Pair("shehui",
+            urlList.add(Pair(NewsType.SHEHUI,
                     "http://temp.163.com/special/00804KVA/cm_shehui_0$it.js?callback=data_callback"))
-            urlList.add(Pair("junshi",
+            urlList.add(Pair(NewsType.JUNSHI,
                     "http://temp.163.com/special/00804KVA/cm_war_0$it.js?callback=data_callback"))
-            urlList.add(Pair("hangkong",
+            urlList.add(Pair(NewsType.HANGKONG,
                     "http://temp.163.com/special/00804KVA/cm_hangkong_0$it.js?callback=data_callback"))
         }
         (2..5).map {
-            urlList.add(Pair("wurenji", "http://news.163.com/uav/special/000189N0/uav_index_0$it.js?callback=data_callback"))
+            urlList.add(Pair(NewsType.WURENJI,
+                    "http://news.163.com/uav/special/000189N0/uav_index_0$it.js?callback=data_callback"))
         }
 
         val parse = JsonParser()
@@ -50,7 +60,7 @@ class CrawlerSchedule {
 
             val urlCon = url.openConnection()
             var input = ""
-            val buff = BufferedReader(InputStreamReader(urlCon.getInputStream(), "UTF-8"))
+            val buff = BufferedReader(InputStreamReader(urlCon.getInputStream(), "GB2312"))
             var inputLine: String
             while (true) {
                 inputLine = buff.readLine() ?: break
@@ -62,9 +72,20 @@ class CrawlerSchedule {
                 parse.parse(input).asJsonArray
             else JsonArray()
             json.map {
-                if (!it.isJsonObject) println(it.isJsonObject)
+                if (it.isJsonObject) {
+                    val newsObject = it.asJsonObject
+                    val news = News(
+                            title = newsObject.get("title").asString,
+                            url = newsObject.get("docurl").asString,
+                            image = newsObject.get("imgurl").asString,
+                            time = commonUtil.parseTime(newsObject.get("time").asString),
+                            type = type
+                    )
+                    newsDao.save(news)
+                }
             }
-            Thread.sleep(1000)
+
+            Thread.sleep(2000)
 
         }
 

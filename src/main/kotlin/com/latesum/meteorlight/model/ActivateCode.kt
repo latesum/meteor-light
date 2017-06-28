@@ -18,7 +18,7 @@ class ActivateCode(
         @Id
         @GeneratedValue(generator = "system-uuid")
         @GenericGenerator(name = "system-uuid", strategy = "uuid")
-        val id: Long = 0,
+        val id: String = "",
 
         /**
          * The user code belongs to.

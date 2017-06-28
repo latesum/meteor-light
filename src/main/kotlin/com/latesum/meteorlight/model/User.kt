@@ -18,7 +18,7 @@ class User(
         @Id
         @GeneratedValue(generator = "system-uuid")
         @GenericGenerator(name = "system-uuid", strategy = "uuid")
-        val id: Long = 0,
+        val id: String = "",
 
         @Column(nullable = false)
         var email: String = "",
@@ -38,9 +38,6 @@ class User(
         @Column(nullable = true,
                 columnDefinition = "TIMESTAMP NULL DEFAULT NULL")
         var lastLoginAt: Instant? = null,
-
-        @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
-        val fake: Boolean = false,
 
         @Column(nullable = false, insertable = false, updatable = false,
                 columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
