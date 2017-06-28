@@ -1,105 +1,75 @@
 package com.latesum.meteorlight.crawler
 
-import edu.uci.ics.crawler4j.crawler.CrawlConfig
-import edu.uci.ics.crawler4j.crawler.CrawlController
-import edu.uci.ics.crawler4j.fetcher.PageFetcher
-import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig
-import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer
-import org.slf4j.LoggerFactory
+import com.google.gson.JsonArray
+import com.google.gson.JsonParser
 import org.springframework.scheduling.annotation.Scheduled
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 
 
 class CrawlerSchedule {
 
     @Scheduled(initialDelay = 1000, fixedRate = 24 * 3600)
     fun startCrawler() {
-        val logger = LoggerFactory.getLogger(CrawlController::class.java)
+        val urlList = mutableListOf<Pair<String, String>>()
+        urlList.add(Pair("guonei",
+                "http://temp.163.com/special/00804KVA/cm_guonei.js?callback=data_callback"))
+        urlList.add(Pair("guoji",
+                "http://temp.163.com/special/00804KVA/cm_guoji.js?callback=data_callback"))
+        urlList.add(Pair("shehui",
+                "http://temp.163.com/special/00804KVA/cm_shehui.js?callback=data_callback"))
+        urlList.add(Pair("junshi",
+                "http://temp.163.com/special/00804KVA/cm_war.js?callback=data_callback"))
+        urlList.add(Pair("hangkong",
+                "http://temp.163.com/special/00804KVA/cm_hangkong.js?callback=data_callback"))
+        urlList.add(Pair("wurenji",
+                "http://news.163.com/uav/special/000189N0/uav_index.js?callback=data_callback"))
+        (2..8).map {
+            urlList.add(Pair("guonei",
+                    "http://temp.163.com/special/00804KVA/cm_guonei_0$it.js?callback=data_callback"))
+            urlList.add(Pair("guoji",
+                    "http://temp.163.com/special/00804KVA/cm_guoji_0$it.js?callback=data_callback"))
+            urlList.add(Pair("shehui",
+                    "http://temp.163.com/special/00804KVA/cm_shehui_0$it.js?callback=data_callback"))
+            urlList.add(Pair("junshi",
+                    "http://temp.163.com/special/00804KVA/cm_war_0$it.js?callback=data_callback"))
+            urlList.add(Pair("hangkong",
+                    "http://temp.163.com/special/00804KVA/cm_hangkong_0$it.js?callback=data_callback"))
+        }
+        (2..5).map {
+            urlList.add(Pair("wurenji", "http://news.163.com/uav/special/000189N0/uav_index_0$it.js?callback=data_callback"))
+        }
 
-        /*
-         * crawlStorageFolder is a folder where intermediate crawl data is
-         * stored.
-         */
-        val crawlStorageFolder = "output"
+        val parse = JsonParser()
 
-        /*
-         * numberOfCrawlers shows the number of concurrent threads that should
-         * be initiated for crawling.
-         */
-        // val numberOfCrawlers = Integer.parseInt(args[1])
-        val numberOfCrawlers = 5
+        while (urlList.isNotEmpty()) {
+            val url = URL(urlList[0].second)
+            val type = urlList[0].first
+            urlList.removeAt(0)
 
-        val config = CrawlConfig()
+            val urlCon = url.openConnection()
+            var input = ""
+            val buff = BufferedReader(InputStreamReader(urlCon.getInputStream(), "UTF-8"))
+            var inputLine: String
+            while (true) {
+                inputLine = buff.readLine() ?: break
+                input += inputLine
+            }
+            buff.close()
+            input = input.removePrefix("data_callback(").removeSuffix(")")
+            val json = if (parse.parse(input).isJsonArray)
+                parse.parse(input).asJsonArray
+            else JsonArray()
+            json.map {
+                if (!it.isJsonObject) println(it.isJsonObject)
+            }
+            Thread.sleep(1000)
 
-        config.crawlStorageFolder = crawlStorageFolder
+        }
 
-        /*
-         * Be polite: Make sure that we don't send more than 1 request per
-         * second (1000 milliseconds between requests).
-         */
-        config.politenessDelay = 1000
+        println("search over")
 
-        /*
-         * You can set the maximum crawl depth here. The default value is -1 for
-         * unlimited depth
-         */
-        config.maxDepthOfCrawling = -1
-
-        /*
-         * You can set the maximum number of pages to crawl. The default value
-         * is -1 for unlimited number of pages
-         */
-        config.maxPagesToFetch = 1000
-
-        /**
-         * Do you want crawler4j to crawl also binary data ?
-         * example: the contents of pdf, or the metadata of images etc
-         */
-        config.isIncludeBinaryContentInCrawling = false
-
-        /*
-         * Do you need to set a proxy? If so, you can use:
-         * config.setProxyHost("proxyserver.example.com");
-         * config.setProxyPort(8080);
-         *
-         * If your proxy also needs authentication:
-         * config.setProxyUsername(username); config.getProxyPassword(password);
-         */
-
-        /*
-         * This config parameter can be used to set your crawl to be resumable
-         * (meaning that you can resume the crawl from a previously
-         * interrupted/crashed crawl). Note: if you enable resuming feature and
-         * want to start a fresh crawl, you need to delete the contents of
-         * rootFolder manually.
-         */
-        config.isResumableCrawling = false
-
-        /*
-         * Instantiate the controller for this crawl.
-         */
-        val pageFetcher = PageFetcher(config)
-        val robotsTxtConfig = RobotstxtConfig()
-        val robotsTxtServer = RobotstxtServer(robotsTxtConfig, pageFetcher)
-        val controller = CrawlController(config, pageFetcher, robotsTxtServer)
-
-        /*
-         * For each crawl, you need to add some seed urls. These are the first
-         * URLs that are fetched and then the crawler starts following links
-         * which are found in these pages
-         */
-        controller.addSeed("http://news.163.com/domestic/")
-        controller.addSeed("http://news.163.com/world/")
-        controller.addSeed("http://news.163.com/shehui/")
-        controller.addSeed("http://war.163.com/")
-        controller.addSeed("http://news.163.com/air/")
-        controller.addSeed("http://news.163.com/uav/")
-        /*
-         * Start the crawl. This is a blocking operation, meaning that your code
-         * will reach the line after this only when crawling is finished.
-         */
-        controller.start(NewsCrawler::class.java, numberOfCrawlers)
-
-        controller.shutdown()
     }
 
 }
