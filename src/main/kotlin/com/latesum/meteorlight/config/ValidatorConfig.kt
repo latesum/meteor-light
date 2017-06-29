@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class ValidatorConfig {
 
-    @Value("\${validator.login}")
+    @Value("\${validator.login.protection}")
     var loginProtection: Boolean = false
 
 }

@@ -16,7 +16,7 @@ import java.net.URL
 class CrawlerService(private val newsDao: NewsDao,
                      private val commonUtil: CommonUtil) {
 
-    @Scheduled(initialDelay = 1000, fixedRate = 24 * 3600)
+    //@Scheduled(fixedRate = 1 * 60 * 60 * 1000)
     fun startCrawler() {
 
         println("start crawler")
@@ -54,6 +54,7 @@ class CrawlerService(private val newsDao: NewsDao,
         val parse = JsonParser()
 
         while (urlList.isNotEmpty()) {
+
             val url = URL(urlList[0].second)
             val type = urlList[0].first
             urlList.removeAt(0)

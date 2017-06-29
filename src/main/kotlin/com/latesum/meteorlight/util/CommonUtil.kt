@@ -33,6 +33,7 @@ class CommonUtil {
     }
 
     fun parseTime(time: String): Instant {
+        if (time == "") return Instant.now()
         val format = SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
         val date = format.parse(time)
         return date.toInstant()
