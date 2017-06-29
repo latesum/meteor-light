@@ -11,6 +11,7 @@ import com.latesum.meteorlight.proto.NewsServiceProtos.ListNewsRequest
 import com.latesum.meteorlight.proto.NewsServiceProtos.ListNewsResponse
 import com.latesum.meteorlight.util.CommonUtil
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,8 +31,10 @@ class NewsService(private val userDao: UserDao,
         val page = commonUtil.normalizePage(request.page)
         val limit = commonUtil.normalizeLimit(request.limit)
 
+        val sortType = "time"
+        val direction = Sort.Direction.DESC
         val news = if (request.type != NewsModelProtos.NewsType.ALL)
-            newsDao.findByType(request.type, PageRequest(page, limit))
+            newsDao.findByType(request.type, PageRequest(page, limit, direction, sortType))
         else newsDao.findAll(PageRequest(page, limit))
 
         return ListNewsResponse.newBuilder()

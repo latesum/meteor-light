@@ -1,6 +1,5 @@
 package com.latesum.meteorlight.service
 
-
 import com.latesum.meteorlight.dao.ActivateCodeDao
 import com.latesum.meteorlight.dao.ResetPasswordCodeDao
 import com.latesum.meteorlight.dao.UserDao
