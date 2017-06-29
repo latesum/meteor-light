@@ -5,6 +5,7 @@ import com.latesum.meteorlight.dao.NewsDao
 import com.latesum.meteorlight.dao.UserDao
 import com.latesum.meteorlight.exception.ServiceException
 import com.latesum.meteorlight.proto.ErrorProtos.Error
+import com.latesum.meteorlight.proto.NewsModelProtos
 import com.latesum.meteorlight.proto.NewsModelProtos.NewsProfile
 import com.latesum.meteorlight.proto.NewsServiceProtos.ListNewsRequest
 import com.latesum.meteorlight.proto.NewsServiceProtos.ListNewsResponse
@@ -29,11 +30,12 @@ class NewsService(private val userDao: UserDao,
         val page = commonUtil.normalizePage(request.page)
         val limit = commonUtil.normalizeLimit(request.limit)
 
-        val news = newsDao.findAll(PageRequest(page, limit))
-        val total = newsDao.count()
+        val news = if (request.type != NewsModelProtos.NewsType.ALL)
+            newsDao.findByType(request.type, PageRequest(page, limit))
+        else newsDao.findAll(PageRequest(page, limit))
 
         return ListNewsResponse.newBuilder()
-                .setTotal(total.toInt())
+
                 .addAllNews(news.map {
                     NewsProfile.newBuilder()
                             .setId(it!!.id)

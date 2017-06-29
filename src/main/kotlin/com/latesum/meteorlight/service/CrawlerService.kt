@@ -74,14 +74,16 @@ class CrawlerService(private val newsDao: NewsDao,
             json.map {
                 if (it.isJsonObject) {
                     val newsObject = it.asJsonObject
-                    val news = News(
-                            title = newsObject.get("title").asString,
-                            url = newsObject.get("docurl").asString,
-                            image = newsObject.get("imgurl").asString,
-                            time = commonUtil.parseTime(newsObject.get("time").asString),
-                            type = type
-                    )
-                    newsDao.save(news)
+                    if (newsDao.findByurl(newsObject.get("docurl").asString) == null) {
+                        val news = News(
+                                title = newsObject.get("title").asString,
+                                url = newsObject.get("docurl").asString,
+                                image = newsObject.get("imgurl").asString,
+                                time = commonUtil.parseTime(newsObject.get("time").asString),
+                                type = type
+                        )
+                        newsDao.save(news)
+                    }
                 }
             }
 

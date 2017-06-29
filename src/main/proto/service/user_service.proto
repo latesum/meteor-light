@@ -65,11 +65,28 @@ message LoginResponse {
     model.UserProfile user = 1;
 }
 
-message SetUserFavouriteRequest {
+message AddUserFavouriteRequest {
     string userId = 1;
     model.NewsType favourite = 2;
 }
 
-message SetUserFavouriteResponse {
+message AddUserFavouriteResponse {
+    model.UserProfile user = 1;
+}
+
+message DeleteUserFavouriteRequest {
+    string userId = 1;
+    model.NewsType favourite = 2;
+}
+
+message DeleteUserFavouriteResponse {
+    model.UserProfile user = 1;
+}
+
+message GetUserRequest {
+    string userId = 1;
+}
+
+message GetUserResponse {
     model.UserProfile user = 1;
 }

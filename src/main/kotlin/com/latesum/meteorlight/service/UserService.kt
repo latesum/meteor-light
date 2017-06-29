@@ -4,11 +4,13 @@ package com.latesum.meteorlight.service
 import com.latesum.meteorlight.dao.ActivateCodeDao
 import com.latesum.meteorlight.dao.ResetPasswordCodeDao
 import com.latesum.meteorlight.dao.UserDao
+import com.latesum.meteorlight.dao.UserFavouriteDao
 import com.latesum.meteorlight.exception.ServiceException
 import com.latesum.meteorlight.exception.ServiceException.ExceptionType
 import com.latesum.meteorlight.model.ActivateCode
 import com.latesum.meteorlight.model.ResetPasswordCode
 import com.latesum.meteorlight.model.User
+import com.latesum.meteorlight.model.UserFavourite
 import com.latesum.meteorlight.proto.ErrorProtos.Error
 import com.latesum.meteorlight.proto.NewsModelProtos
 import com.latesum.meteorlight.proto.UserModelProtos.UserProfile
@@ -21,6 +23,7 @@ import java.time.Instant
 
 @Service
 class UserService(private val userDao: UserDao,
+                  private val userFavouriteDao: UserFavouriteDao,
                   private val activateCodeDao: ActivateCodeDao,
                   private val resetPasswordCodeDao: ResetPasswordCodeDao,
                   private val userServiceUtil: UserServiceUtil) {
@@ -230,25 +233,24 @@ class UserService(private val userDao: UserDao,
 
         // Do some job after user login (e.g. update last login time).
         postLogin(user)
+
+        val favourite = userFavouriteDao.findByUserId(user.id)
         val userProfile = UserProfile.newBuilder()
                 .setId(user.id)
                 .setEmail(user.email)
                 .setNickname(user.nickname)
-        user.favourite?.run {
-            userProfile
-                    .setFavourite(user.favourite)
-        }
+                .addAllFavourite(favourite.map {
+                    it.favourite
+                })
 
         return LoginResponse.newBuilder()
                 .setUser(userProfile).build()
     }
 
-
     @Throws(ServiceException::class)
     @Transactional(rollbackFor = arrayOf(Exception::class))
-    fun setUserFavourite(request: SetUserFavouriteRequest): SetUserFavouriteResponse {
-        // Update user password.
-        var user = userDao.findOne(request.userId) ?:
+    fun addUserFavourite(request: AddUserFavouriteRequest): AddUserFavouriteResponse {
+        val user = userDao.findOne(request.userId) ?:
                 throw ServiceException.newBuilder()
                         .setType(ExceptionType.INVALID_ARGUMENT)
                         .setMessage(Error.USER_NOT_FOUND.name).build()
@@ -256,21 +258,83 @@ class UserService(private val userDao: UserDao,
         if (request.favourite == NewsModelProtos.NewsType.UNRECOGNIZED)
             throw ServiceException.newBuilder()
                     .setType(ExceptionType.INVALID_ARGUMENT)
-                    .setMessage(Error.USER_SERVICE_UNACTIVATED_USER.name).build()
+                    .setMessage(Error.USER_SERVICE_INVALID_FAVOURITE.name).build()
 
-        user.favourite = request.favourite
-        user = userDao.save(user)
+        val userFavourite = userFavouriteDao.findByUserIdAndFavourite(user.id, request.favourite)
+        if (userFavourite != null)
+            throw ServiceException.newBuilder()
+                    .setType(ExceptionType.INVALID_ARGUMENT)
+                    .setMessage(Error.USER_SERVICE_DUPLICATED_FAVOURITE.name).build()
 
+        userFavouriteDao.save(UserFavourite(
+                user = user,
+                favourite = request.favourite
+        ))
+
+        val favourite = userFavouriteDao.findByUserId(user.id)
         val userProfile = UserProfile.newBuilder()
                 .setId(user.id)
                 .setEmail(user.email)
                 .setNickname(user.nickname)
-        user.favourite?.run {
-            userProfile
-                    .setFavourite(user.favourite)
-        }
+                .addAllFavourite(favourite.map {
+                    it.favourite
+                })
 
-        return SetUserFavouriteResponse.newBuilder()
+        return AddUserFavouriteResponse.newBuilder()
+                .setUser(userProfile).build()
+    }
+
+    @Throws(ServiceException::class)
+    @Transactional(rollbackFor = arrayOf(Exception::class))
+    fun removeUserFavourite(request: DeleteUserFavouriteRequest): DeleteUserFavouriteResponse {
+        val user = userDao.findOne(request.userId) ?:
+                throw ServiceException.newBuilder()
+                        .setType(ExceptionType.INVALID_ARGUMENT)
+                        .setMessage(Error.USER_NOT_FOUND.name).build()
+
+        if (request.favourite == NewsModelProtos.NewsType.UNRECOGNIZED)
+            throw ServiceException.newBuilder()
+                    .setType(ExceptionType.INVALID_ARGUMENT)
+                    .setMessage(Error.USER_SERVICE_INVALID_FAVOURITE.name).build()
+
+        val userFavourite = userFavouriteDao.findByUserIdAndFavourite(user.id, request.favourite) ?:
+                throw ServiceException.newBuilder()
+                        .setType(ExceptionType.INVALID_ARGUMENT)
+                        .setMessage(Error.USER_SERVICE_DUPLICATED_FAVOURITE.name).build()
+
+        userFavouriteDao.delete(userFavourite)
+
+        val favourite = userFavouriteDao.findByUserId(user.id)
+        val userProfile = UserProfile.newBuilder()
+                .setId(user.id)
+                .setEmail(user.email)
+                .setNickname(user.nickname)
+                .addAllFavourite(favourite.map {
+                    it.favourite
+                })
+
+        return DeleteUserFavouriteResponse.newBuilder()
+                .setUser(userProfile).build()
+    }
+
+    @Throws(ServiceException::class)
+    @Transactional(readOnly = true)
+    fun getUser(request: GetUserRequest): GetUserResponse {
+        val user = userDao.findOne(request.userId) ?:
+                throw ServiceException.newBuilder()
+                        .setType(ExceptionType.INVALID_ARGUMENT)
+                        .setMessage(Error.USER_NOT_FOUND.name).build()
+
+        val favourite = userFavouriteDao.findByUserId(user.id)
+        val userProfile = UserProfile.newBuilder()
+                .setId(user.id)
+                .setEmail(user.email)
+                .setNickname(user.nickname)
+                .addAllFavourite(favourite.map {
+                    it.favourite
+                })
+
+        return GetUserResponse.newBuilder()
                 .setUser(userProfile).build()
     }
 

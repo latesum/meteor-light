@@ -10,9 +10,10 @@ import "model/news.proto";
 message ListNewsRequest {
     int32 page = 1;
     int32 limit = 2;
+    model.NewsType type = 3;
 }
 
 message ListNewsResponse {
-    int32 total = 1;
+    bool end = 1;
     repeated model.NewsProfile news = 2;
 }

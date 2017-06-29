@@ -42,9 +42,6 @@ class User(
         var lastLoginAt: Instant? = null,
 
         @Column(nullable = true)
-        var favourite: NewsType? = null,
-
-        @Column(nullable = true)
         var lastLookAt: NewsType? = null,
 
         @Column(nullable = false, insertable = false, updatable = false,

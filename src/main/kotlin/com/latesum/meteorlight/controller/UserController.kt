@@ -127,15 +127,27 @@ open class UserController {
         return UserControllerProtos.ResendActivateMailResponse.newBuilder().build().toJson()
     }
 
-    @RequestMapping(value = "/users/favourite", method = arrayOf(RequestMethod.POST),
+    @RequestMapping(value = "/users/favourites", method = arrayOf(RequestMethod.POST),
             produces = arrayOf("application/json; charset=utf-8"))
-    fun setUserFavourite(session: HttpSession,
+    fun addUserFavourite(session: HttpSession,
                          @RequestPart(value = "data", required = true) data: String): String {
-        val request = ProtobufUtils.fromJson(data, UserControllerProtos.SetUserFavouriteRequest::class)
-        val response = userService.setUserFavourite(UserServiceProtos.SetUserFavouriteRequest.newBuilder()
+        val request = ProtobufUtils.fromJson(data, UserControllerProtos.AddUserFavouriteRequest::class)
+        val response = userService.addUserFavourite(UserServiceProtos.AddUserFavouriteRequest.newBuilder()
                 .setUserId(session.getAttribute("id") as String)
                 .setFavourite(request.favourite).build())
-        return UserControllerProtos.SetUserFavouriteResponse.newBuilder()
+        return UserControllerProtos.AddUserFavouriteResponse.newBuilder()
+                .setUser(response.user).build().toJson()
+    }
+
+    @RequestMapping(value = "/users/favourites", method = arrayOf(RequestMethod.DELETE),
+            produces = arrayOf("application/json; charset=utf-8"))
+    fun deleteUserFavourite(session: HttpSession,
+                            @RequestPart(value = "data", required = true) data: String): String {
+        val request = ProtobufUtils.fromJson(data, UserControllerProtos.DeleteUserFavouriteRequest::class)
+        val response = userService.removeUserFavourite(UserServiceProtos.DeleteUserFavouriteRequest.newBuilder()
+                .setUserId(session.getAttribute("id") as String)
+                .setFavourite(request.favourite).build())
+        return UserControllerProtos.DeleteUserFavouriteResponse.newBuilder()
                 .setUser(response.user).build().toJson()
     }
 

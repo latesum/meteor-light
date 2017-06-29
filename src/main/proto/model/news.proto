@@ -17,10 +17,12 @@ message NewsProfile {
 }
 
 enum NewsType {
-    GUONEI = 0;
-    GUOJI = 1;
-    SHEHUI = 2;
-    JUNSHI = 3;
-    HANGKONG = 4;
-    WURENJI = 5;
+    ALL = 0;
+
+    GUONEI = 1;
+    GUOJI = 2;
+    SHEHUI = 3;
+    JUNSHI = 4;
+    HANGKONG = 5;
+    WURENJI = 6;
 }

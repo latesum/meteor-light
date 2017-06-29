@@ -11,7 +11,7 @@ message UserProfile {
     string id = 1;
     string email = 2;
     string nickname = 3;
-    model.NewsType favourite = 4;
+    repeated model.NewsType favourite = 4;
     model.NewsType last_look_at = 5;
 }
 

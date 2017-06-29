@@ -11,9 +11,10 @@ message ListNewsRequest {
     string user_id = 1;
     int32 page = 2;
     int32 limit = 3;
+    model.NewsType type = 4;
 }
 
 message ListNewsResponse {
-    int32 total = 1;
+    bool end = 1;
     repeated model.NewsProfile news = 2;
 }
