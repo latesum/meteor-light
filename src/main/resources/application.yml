@@ -41,3 +41,5 @@ redis:
   host: 118.184.29.81
   port: 6379
   password: 9Klv4f7RgXJ2rnSQ
+validator:
+  login: true

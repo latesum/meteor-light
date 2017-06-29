@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController
 import javax.servlet.http.HttpSession
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/news")
 open class NewsController {
 
     @Autowired
     private lateinit var newsService: NewsService
 
-    @RequestMapping(value = "/sessions", method = arrayOf(RequestMethod.POST),
+    @RequestMapping(value = "", method = arrayOf(RequestMethod.GET),
             produces = arrayOf("application/json; charset=utf-8"))
     fun listNews(session: HttpSession,
                  @RequestParam(value = "page", required = false, defaultValue = "0") page: Int,
