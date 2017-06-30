@@ -5,7 +5,8 @@ var webpack = require('webpack');
 
 var ROOT_PATH = path.resolve(__dirname);
 var APP_PATH = path.resolve(ROOT_PATH, 'src');
-var BUILD_PATH = path.resolve(ROOT_PATH, 'dist/');
+var BUILD_PATH = path.resolve(ROOT_PATH, '../src/main/resources/static');
+// var BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
 
 // npm run build
 // ./node_modules/.bin/webpack --config webpack.config.js

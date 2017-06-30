@@ -23,10 +23,10 @@ class NewsService(private val userDao: UserDao,
     @Throws(ServiceException::class)
     @Transactional(readOnly = true)
     fun listNews(request: ListNewsRequest): ListNewsResponse {
-        val user = userDao.findOne(request.userId) ?:
-                throw ServiceException.newBuilder()
-                        .setType(ServiceException.ExceptionType.INVALID_ARGUMENT)
-                        .setMessage(Error.USER_NOT_FOUND.name).build()
+//        val user = userDao.findOne(request.userId) ?:
+//                throw ServiceException.newBuilder()
+//                        .setType(ServiceException.ExceptionType.INVALID_ARGUMENT)
+//                        .setMessage(Error.USER_NOT_FOUND.name).build()
 
         val page = commonUtil.normalizePage(request.page)
         val limit = commonUtil.normalizeLimit(request.limit)

@@ -26,7 +26,7 @@ open class NewsController {
                  @RequestParam(value = "limit", required = false, defaultValue = "30") limit: Int,
                  @RequestParam(value = "type", required = false, defaultValue = "ALL") type: String): String {
         val response = newsService.listNews(NewsServiceProtos.ListNewsRequest.newBuilder()
-                .setUserId(session.getAttribute("id") as String)
+                .setUserId(session.getAttribute("id") as String? ?: "")
                 .setPage(page)
                 .setLimit(limit)
                 .setType(NewsModelProtos.NewsType.valueOf(type)).build())

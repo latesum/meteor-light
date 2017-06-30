@@ -19,6 +19,7 @@ class ErrorController : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = ServiceException::class)
     fun monitorError(e: ServiceException, request: WebRequest): ResponseEntity<Any> {
+        e.printStackTrace()
         when (e.type) {
             ServiceException.ExceptionType.PERMISSION_DENIED ->
                 return handleExceptionInternal(
@@ -46,6 +47,7 @@ class ErrorController : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(value = Exception::class)
     fun unknownError(e: Exception, request: WebRequest): ResponseEntity<Any> {
+        e.printStackTrace()
         val rspJson = JsonObject().addProperty("error", e.message).toString()
         return handleExceptionInternal(e, rspJson, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request)
     }

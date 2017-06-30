@@ -10,7 +10,8 @@ class UserLoginValidator : HandlerInterceptor {
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any?): Boolean {
         // login, list problem sets
-        if ((request.requestURI == "/api/sessions" && request.method == "POST")) {
+        if ((request.requestURI == "/api/sessions" && request.method == "POST") ||
+                (request.requestURI == "/api/news" && request.method == "GET")) {
             return true
         }
         if (Strings.isNullOrEmpty(request.session?.getAttribute("id")?.toString())) {

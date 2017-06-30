@@ -16,7 +16,7 @@ import java.net.URL
 class CrawlerService(private val newsDao: NewsDao,
                      private val commonUtil: CommonUtil) {
 
-    //@Scheduled(fixedRate = 1 * 60 * 60 * 1000)
+    @Scheduled(fixedRate = 1 * 60 * 60 * 1000)
     fun startCrawler() {
 
         println("start crawler")
@@ -83,7 +83,7 @@ class CrawlerService(private val newsDao: NewsDao,
                                 time = commonUtil.parseTime(newsObject.get("time").asString),
                                 type = type
                         )
-                        newsDao.save(news)
+                        val new = newsDao.save(news)
                     }
                 }
             }

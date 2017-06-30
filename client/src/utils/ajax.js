@@ -17,6 +17,25 @@ exports.Get = (url,callback,failback) => {
   });
 }
 
+exports.Delete = (url,callback,failback) => {
+  const xhr = new XMLHttpRequest();
+  xhr.open('DELETE', url);
+  xhr.send(null);
+  xhr.addEventListener('readystatechange', () => {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+    try {
+      const data = JSON.parse(xhr.responseText);
+      callback(data);
+    } catch (e) {
+      failback(e);
+    }
+  }
+});
+  xhr.addEventListener('error', (error) => {
+    failback(error);
+});
+}
+
 function postDataFormat(obj){
     if(typeof obj != "object" ) {
         alert("输入的参数必须是对象");
@@ -31,7 +50,7 @@ function postDataFormat(obj){
         }
         return data;
     }else {
-        // 不支持FormData的浏览器的处理 
+        // 不支持FormData的浏览器的处理
         var arr = new Array();
         var i = 0;
         for(var attr in obj) {
@@ -44,9 +63,10 @@ function postDataFormat(obj){
 
 exports.Post = (url, query,callback,failback) => {
   const xhr = new XMLHttpRequest();
+  const input = new FormData(query);
   xhr.open('POST', url, true);
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xhr.send(query);
+  xhr.send(input);
   xhr.addEventListener('readystatechange', () => {
     if (xhr.readyState === 4 && xhr.status === 200) {
       try {
@@ -60,4 +80,25 @@ exports.Post = (url, query,callback,failback) => {
   xhr.addEventListener('error', (error) => {
     failback(error);
   });
+}
+
+exports.Put = (url, query,callback,failback) => {
+  const xhr = new XMLHttpRequest();
+  const input = new FormData(query);
+  xhr.open('PUT', url, true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhr.send(input);
+  xhr.addEventListener('readystatechange', () => {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+    try {
+      const data = JSON.parse(xhr.responseText);
+      callback(data);
+    } catch (e) {
+      failback(e);
+    }
+  }
+});
+  xhr.addEventListener('error', (error) => {
+    failback(error);
+});
 }
